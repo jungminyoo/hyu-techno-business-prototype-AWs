@@ -34,7 +34,10 @@ const router = createBrowserRouter([
         Component: ManageLayout,
         children: [
           {
-            path: ":patientId", Component: Examine
+            path: ":patientId",
+            children: [
+              { path: "exam/:examineId", Component: Examine },
+            ],
           },
         ],
       },

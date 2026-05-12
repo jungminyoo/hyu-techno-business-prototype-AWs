@@ -9,7 +9,6 @@ import Area from "./pages/examine/Area";
 import Point from "./pages/examine/Point";
 import Movement from "./pages/examine/Movement";
 import Others from "./pages/examine/Others";
-import Dashboard from "./pages/manage/Dashboard";
 import Examine from "./pages/manage/Examine";
 
 const router = createBrowserRouter([
@@ -35,9 +34,7 @@ const router = createBrowserRouter([
         Component: ManageLayout,
         children: [
           {
-            path: "dashboard",
-            Component: Dashboard,
-            children: [{ path: ":examineId", Component: Examine }],
+            path: ":patientId", Component: Examine
           },
         ],
       },

@@ -6,15 +6,20 @@ export interface Patient {
   phone: string; // 01012345678
   address: string;
 
-  // 기저질환
-  diseases: Disease[];
+  // 현재 기저질환
+  diseases?: Disease[];
+  // 과거 기저질환 (현재는 없지만 과거에 있었던 질환)
+  pastDiseases?: Disease[];
 
-  // 복용 약
-  medications: Medication[];
+  // 현재 복용 약
+  medications?: Medication[];
+  // 과거 복용 약 (현재는 없지만 과거에 있었던 약)
+  pastMedications?: Medication[];
 
-  // 알레르기 여부
-  hasAllergy: boolean;
+  // 현재 알레르기 여부
   allergyDescription?: string;
+  // 과거 알레르기 여부
+  pastAllergyDescription?: string;
 
   createdAt: string;
 }
@@ -33,7 +38,6 @@ export const patients: Patient[] = [
     address: "서울특별시 광진구",
     diseases: ["고혈압"],
     medications: ["혈압약"],
-    hasAllergy: false,
     createdAt: "2026-03-02T09:12:00",
   },
   {
@@ -45,7 +49,6 @@ export const patients: Patient[] = [
     address: "서울특별시 송파구",
     diseases: ["당뇨"],
     medications: ["당뇨약"],
-    hasAllergy: true,
     allergyDescription: "페니실린 알레르기",
     createdAt: "2026-03-05T14:20:00",
   },
@@ -58,7 +61,6 @@ export const patients: Patient[] = [
     address: "경기도 성남시",
     diseases: ["심장병"],
     medications: ["심장약", "아스피린"],
-    hasAllergy: false,
     createdAt: "2026-03-11T10:42:00",
   },
   {
@@ -70,7 +72,6 @@ export const patients: Patient[] = [
     address: "인천광역시 연수구",
     diseases: [],
     medications: [],
-    hasAllergy: false,
     createdAt: "2026-03-14T16:08:00",
   },
   {
@@ -82,7 +83,6 @@ export const patients: Patient[] = [
     address: "부산광역시 해운대구",
     diseases: ["고혈압", "당뇨"],
     medications: ["혈압약", "당뇨약"],
-    hasAllergy: true,
     allergyDescription: "진통제 복용 후 두드러기",
     createdAt: "2026-03-18T11:35:00",
   },
@@ -95,7 +95,6 @@ export const patients: Patient[] = [
     address: "대전광역시 유성구",
     diseases: [],
     medications: [],
-    hasAllergy: false,
     createdAt: "2026-03-20T13:14:00",
   },
   {
@@ -107,7 +106,6 @@ export const patients: Patient[] = [
     address: "광주광역시 북구",
     diseases: ["고지혈증"],
     medications: ["고지혈증 약"],
-    hasAllergy: false,
     createdAt: "2026-03-25T08:50:00",
   },
   {
@@ -119,7 +117,6 @@ export const patients: Patient[] = [
     address: "울산광역시 남구",
     diseases: [],
     medications: [],
-    hasAllergy: true,
     allergyDescription: "조영제 알레르기",
     createdAt: "2026-03-27T15:27:00",
   },
@@ -132,7 +129,6 @@ export const patients: Patient[] = [
     address: "서울특별시 강남구",
     diseases: ["당뇨"],
     medications: ["당뇨약"],
-    hasAllergy: false,
     createdAt: "2026-04-01T09:45:00",
   },
   {
@@ -144,7 +140,6 @@ export const patients: Patient[] = [
     address: "경기도 수원시",
     diseases: ["갑상선 질환"],
     medications: ["갑상선 약"],
-    hasAllergy: false,
     createdAt: "2026-04-03T17:11:00",
   },
   {
@@ -156,7 +151,6 @@ export const patients: Patient[] = [
     address: "충청북도 청주시",
     diseases: ["심장병"],
     medications: ["심장약"],
-    hasAllergy: true,
     allergyDescription: "항생제 알레르기",
     createdAt: "2026-04-08T10:19:00",
   },
@@ -169,7 +163,6 @@ export const patients: Patient[] = [
     address: "전라북도 전주시",
     diseases: [],
     medications: ["아스피린"],
-    hasAllergy: false,
     createdAt: "2026-04-12T12:31:00",
   },
   {
@@ -181,7 +174,6 @@ export const patients: Patient[] = [
     address: "강원도 춘천시",
     diseases: ["고혈압"],
     medications: ["혈압약"],
-    hasAllergy: false,
     createdAt: "2026-04-16T14:52:00",
   },
   {
@@ -193,7 +185,6 @@ export const patients: Patient[] = [
     address: "제주특별자치도 제주시",
     diseases: [],
     medications: [],
-    hasAllergy: true,
     allergyDescription: "마취약 부작용 경험",
     createdAt: "2026-04-19T11:06:00",
   },
@@ -206,7 +197,6 @@ export const patients: Patient[] = [
     address: "경상북도 포항시",
     diseases: ["통풍"],
     medications: ["통풍 약"],
-    hasAllergy: false,
     createdAt: "2026-04-24T16:40:00",
   },
   {
@@ -218,7 +208,6 @@ export const patients: Patient[] = [
     address: "대구광역시 수성구",
     diseases: [],
     medications: [],
-    hasAllergy: false,
     createdAt: "2026-04-28T09:58:00",
   },
   {
@@ -230,7 +219,6 @@ export const patients: Patient[] = [
     address: "세종특별자치시",
     diseases: ["당뇨", "고혈압"],
     medications: ["당뇨약", "혈압약"],
-    hasAllergy: false,
     createdAt: "2026-05-01T13:47:00",
   },
   {
@@ -242,7 +230,6 @@ export const patients: Patient[] = [
     address: "경기도 고양시",
     diseases: [],
     medications: ["비타민D"],
-    hasAllergy: false,
     createdAt: "2026-05-04T15:33:00",
   },
   {
@@ -254,7 +241,6 @@ export const patients: Patient[] = [
     address: "충청남도 천안시",
     diseases: ["천식"],
     medications: ["흡입기"],
-    hasAllergy: true,
     allergyDescription: "해산물 알레르기",
     createdAt: "2026-05-07T10:04:00",
   },
@@ -267,7 +253,6 @@ export const patients: Patient[] = [
     address: "서울특별시 마포구",
     diseases: ["빈혈"],
     medications: ["철분제"],
-    hasAllergy: false,
     createdAt: "2026-05-10T18:22:00",
   },
 ];

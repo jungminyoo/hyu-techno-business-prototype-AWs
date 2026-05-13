@@ -10,6 +10,8 @@ import Point from "./pages/examine/Point";
 import Movement from "./pages/examine/Movement";
 import Others from "./pages/examine/Others";
 import Examine from "./pages/manage/Examine";
+import PatientsSidebar from "./pages/manage/PatientsSidebar";
+import ExamRecordsSidebar from "./pages/manage/ExamRecordsSidebar";
 
 const router = createBrowserRouter([
   {
@@ -34,9 +36,19 @@ const router = createBrowserRouter([
         Component: ManageLayout,
         children: [
           {
-            path: ":patientId",
+            path: "patients",
+            Component: PatientsSidebar,
             children: [
-              { path: "exam/:examineId", Component: Examine },
+              {
+                path: ":patientId",
+                Component: ExamRecordsSidebar,
+                children: [
+                  {
+                    path: "exam/:examineId",
+                    Component: Examine,
+                  },
+                ],
+              },
             ],
           },
         ],

@@ -54,10 +54,10 @@ export function AnatomyModel(props: ThreeElements["group"]) {
         action = null;
     }
 
-    if (action) action.reset().fadeIn(0.5).play();
+    if (action) action.reset().fadeIn(0.2).play();
 
     return () => {
-      if (action) action.fadeOut(0.5);
+      if (action) action.fadeOut(0.2);
     };
   }, [phase, currentPainMovement]);
 

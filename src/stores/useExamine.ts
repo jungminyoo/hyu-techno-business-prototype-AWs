@@ -54,10 +54,7 @@ const useExamine = create(
     selectedCurrentPainMovement: (painMovement) =>
       set({ currentPainMovement: painMovement }),
     completedPainMovement: () =>
-      set((state) => {
-        console.log(state);
-        return { painMovement: [state.currentPainMovement] };
-      }),
+      set((state) => ({ painMovement: [state.currentPainMovement] })),
   })),
 );
 

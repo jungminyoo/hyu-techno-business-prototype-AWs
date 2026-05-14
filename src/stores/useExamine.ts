@@ -13,6 +13,9 @@ export interface ExamineStoreType extends Examine {
   selectedPainPoint: () => void;
   selectedCurrentPainMovement: (painMovement: PainMovement) => void;
   completedPainMovement: () => void;
+  completedExamine: (
+    othersResult: Pick<Examine, "painType" | "painStartedAt" | "painScore">,
+  ) => void;
 }
 
 const useExamine = create(
@@ -55,6 +58,8 @@ const useExamine = create(
       set({ currentPainMovement: painMovement }),
     completedPainMovement: () =>
       set((state) => ({ painMovement: [state.currentPainMovement] })),
+
+    completedExamine: (othersResult) => set(othersResult),
   })),
 );
 

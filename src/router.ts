@@ -8,6 +8,7 @@ import Revisit from "./pages/examine/Revisit";
 import Area from "./pages/examine/Area";
 import Others from "./pages/examine/Others";
 import Examine from "./pages/manage/Examine";
+import Complete from "./pages/examine/Complete";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
           { path: "revisit", Component: Revisit },
           { path: "area", Component: Area },
           { path: "others", Component: Others },
+          { path: "complete", Component: Complete },
         ],
       },
       {

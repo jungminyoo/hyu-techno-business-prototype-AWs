@@ -13,17 +13,17 @@ function Area() {
       <h2
         className={`text-center mb-10 font-bold text-2xl ${phase !== "area" && "hidden"}`}
       >
-        아픈 부위를 선택해 주세요.
+        1. 아픈 부위를 선택해 주세요.
       </h2>
       <h2
         className={`text-center mb-10 font-bold text-2xl ${phase !== "areaToPoint" && phase !== "point" && "hidden"}`}
       >
-        아픈 지점을 선택해 주세요.
+        2. 아픈 지점을 선택해 주세요.
       </h2>
       <h2
         className={`text-center mb-4 font-bold text-xl ${phase !== "movement" && "hidden"}`}
       >
-        통증이 유발되는 움직임을 <br />
+        3. 통증이 유발되는 움직임을 <br />
         선택해 주세요.
       </h2>
 

@@ -17,7 +17,7 @@ function PatientsSidebar() {
           className="absolute top-4 left-4 w-8 h-8 object-contain"
         />
         <h2 className="mt-10  mb-3 text-sm font-semibold text-slate-900">Patients</h2>
-        <nav className="flex flex-col gap-2 overflow-auto max-h-[calc(100vh-10rem)] pr-1 no-scrollbar">
+        <nav className="flex flex-col gap-2 overflow-auto max-h-[calc(100vh-10rem)] pr-1">
           {patients.map((patient) => (
             <NavLink
               key={patient.patientId}

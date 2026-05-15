@@ -1,6 +1,19 @@
 import { useMemo } from "react";
 import { useParams } from "react-router";
 import { examines } from "../../datas/examinesData";
+import elbowImg from "../../assets/img/muscles_elbow.jpeg";
+
+function formatDuration(startedAt: Date, createdAt: string) {
+  const endDate = new Date(createdAt);
+  if (Number.isNaN(startedAt.getTime()) || Number.isNaN(endDate.getTime())) {
+    return "-";
+  }
+
+  const diffTime = endDate.getTime() - startedAt.getTime();
+  const diffDays = Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
+
+  return diffDays === 0 ? "당일" : `${diffDays}일`;
+}
 
 function Examine() {
   const { examineId } = useParams<{ examineId?: string }>();
@@ -20,36 +33,89 @@ function Examine() {
   }
 
   return (
-    <section className="border-slate-200 bg-white p-6">
-
+    <section className="bg-white p-6">
       {examine ? (
-        <div className="mt-6 border-t border-slate-200 pt-6">
-          <h3 className="mb-4 text-lg font-semibold text-slate-900">검사 상세 정보</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div className="rounded-lg bg-slate-50 p-3">
-              <p className="text-slate-500">통증 부위</p>
-              <p className="font-medium text-slate-900">{examine.painArea.join(", ")}</p>
-            </div>
-            <div className="rounded-lg bg-slate-50 p-3">
-              <p className="text-slate-500">통증 점수</p>
-              <p className="font-medium text-slate-900">{examine.painScore}/10</p>
-            </div>
-            <div className="rounded-lg bg-slate-50 p-3">
-              <p className="text-slate-500">통증 움직임</p>
-              <p className="font-medium text-slate-900">{examine.painMovement.join(", ")}</p>
-            </div>
-            <div className="rounded-lg bg-slate-50 p-3">
-              <p className="text-slate-500">통증 종류</p>
-              <p className="font-medium text-slate-900">{examine.painType.join(", ")}</p>
-            </div>
-            <div className="rounded-lg bg-slate-50 p-3 md:col-span-2">
-              <p className="text-slate-500">진료 상태</p>
-              <p className="font-medium text-slate-900">
-                {examine.isCompleted ? "✓ 완료" : "진행 중"}
-              </p>
+        <>
+          <div className="h-164 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+            <img src={elbowImg} alt="팔꿈치 참고 이미지" className="h-full w-full object-cover" />
+          </div>
+
+          <div className="mt-6 border-t border-slate-200 pt-6">
+            <h3 className="mb-4 text-lg font-semibold text-slate-900">검사 상세 정보</h3>
+            <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-4">
+              <div className="rounded-lg bg-slate-50 p-3">
+                <p className="text-slate-500">통증 부위</p>
+                <p className="font-medium text-slate-900">{examine.painArea.join(", ")}</p>
+              </div>
+              <div className="rounded-lg bg-slate-50 p-3">
+                <p className="text-slate-500">유발 동작</p>
+                <p className="font-medium text-slate-900">{examine.painMovement.join(", ")}</p>
+              </div>
+              <div className="rounded-lg bg-slate-50 p-3">
+                <p className="text-slate-500">통증 유형</p>
+                <p className="font-medium text-slate-900">{examine.painType.join(", ")}</p>
+              </div>
+              <div className="rounded-lg bg-slate-50 p-3">
+                <p className="text-slate-500">지속 기간</p>
+                <p className="font-medium text-slate-900">
+                  {formatDuration(examine.painStartedAt, examine.createdAt)}
+                </p>
+              </div>
+
+              <div className="rounded-lg bg-slate-50 p-3 md:col-span-4">
+                <p className="text-slate-500 pb-5">통증 강도</p>
+                <div className="w-full rounded-full bg-slate-200">
+                  <div
+                    className="flex h-4 items-center justify-center rounded-full bg-blue-600 p-0.5 text-center text-xs font-medium leading-none text-white"
+                    style={{ width: `${examine.painScore * 10}%` }}
+                  >
+                    {examine.painScore}/10
+                  </div>
+                </div>
+              </div>
+            
             </div>
           </div>
-        </div>
+
+          <div className="mt-6 grid grid-cols-1 gap-4 border-t border-slate-200 pt-6 md:grid-cols-2">
+            <div className="rounded-xl border border-emerald-200 bg-linear-to-br from-emerald-50 to-white p-4">
+              <div className="mb-3 flex items-center justify-between">
+                <p className="text-sm font-semibold text-emerald-800">진료 완료</p>
+                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+                  {examine.isCompleted ? "완료" : "진행중"}
+                </span>
+              </div>
+              <p className="mb-4 text-xs text-emerald-700/80">
+                진료 기록을 완료 상태로 확정합니다.
+              </p>
+              <button
+                type="button"
+                className="w-full rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-300"
+                disabled={examine.isCompleted}
+              >
+                {examine.isCompleted ? "완료됨" : "완료 처리"}
+              </button>
+            </div>
+
+            <div className="rounded-xl border border-blue-200 bg-linear-to-br from-blue-50 to-white p-4">
+              <div className="mb-3 flex items-center justify-between">
+                <p className="text-sm font-semibold text-blue-800">진료실 호출</p>
+                <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">
+                  빠른 호출
+                </span>
+              </div>
+              <p className="mb-4 text-xs text-blue-700/80">
+                현재 환자를 진료실로 즉시 호출합니다.
+              </p>
+              <button
+                type="button"
+                className="w-full rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+              >
+                호출하기
+              </button>
+            </div>
+          </div>
+        </>
       ) : null}
     </section>
   );

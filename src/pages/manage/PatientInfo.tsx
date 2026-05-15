@@ -32,7 +32,7 @@ function PatientInfo({ patient }: { patient: Patient }) {
   return (
     <>
       <div className="sticky top-0 z-100 flex items-center gap-4 border-b p-4 border-slate-200 bg-white">
-        <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-amber-200 text-lg font-semibold text-slate-900">
+        <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-amber-200 text-lg font-semibold text-slate-900"> {/* patientImg */}
           {patient.name.charAt(0)}
         </div>
         <div className="min-w-0">

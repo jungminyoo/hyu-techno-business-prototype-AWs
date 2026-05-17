@@ -40,8 +40,8 @@ function Anatomy() {
 
     const rect = e.currentTarget.getBoundingClientRect();
 
-    const x = Math.round(e.clientX - rect.left);
-    const y = Math.round(e.clientY - rect.top);
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
 
     selectedCurrentPainPoint(x, y);
   };
@@ -56,7 +56,10 @@ function Anatomy() {
         phase === "point" && "cursor-pointer"
       }`}
     >
-      <Canvas className="absolute inset-0 h-full w-full">
+      <Canvas
+        className="absolute inset-0 h-full w-full"
+        gl={{ preserveDrawingBuffer: true }}
+      >
         <color args={["#1b1b1b"]} attach="background" />
 
         <Environment
@@ -98,8 +101,8 @@ function Anatomy() {
           rounded-full bg-red-600 transition-all
         "
             style={{
-              left: `${currentPainPointX}px`,
-              top: `${currentPainPointY}px`,
+              left: `${currentPainPointX * 100}%`,
+              top: `${currentPainPointY * 100}%`,
             }}
           />
         )}

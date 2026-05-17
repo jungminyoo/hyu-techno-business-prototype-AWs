@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useExamine from "../../stores/useExamine";
 import { useNavigate } from "react-router";
+import useFakeDB from "../../stores/useFakeDB";
 
 const painTypeOptions = [
   "날카롭고, 찌르는 듯한 통증",
@@ -14,6 +15,7 @@ const painTypeOptions = [
 function Others() {
   const navigate = useNavigate();
 
+  const addExamine = useFakeDB((state) => state.addExamine);
   const completedExamine = useExamine((state) => state.completedExamine);
 
   const [selectedPainTypes, setSelectedPainTypes] = useState<string[]>([]);
@@ -48,7 +50,20 @@ function Others() {
       painScore,
     };
 
-    completedExamine(result);
+    const newExamine = completedExamine(result);
+
+    addExamine({
+      patientId: newExamine.patientId,
+      painArea: newExamine.painArea,
+      painPointX: newExamine.painPointX,
+      painPointY: newExamine.painPointY,
+      painMovement: newExamine.painMovement,
+      painType: newExamine.painType,
+      painStartedAt: newExamine.painStartedAt,
+      painScore: newExamine.painScore,
+      isCompleted: newExamine.isCompleted,
+    });
+
     navigate("/examine/complete");
   };
 

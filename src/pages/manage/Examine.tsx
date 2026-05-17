@@ -1,7 +1,7 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router";
-import { examines } from "../../datas/examinesData";
 import elbowImg from "../../assets/img/muscles_elbow.jpeg";
+import useFakeDB from "../../stores/useFakeDB";
 
 function formatDuration(startedAt: Date, createdAt: string) {
   const endDate = new Date(createdAt);
@@ -16,13 +16,80 @@ function formatDuration(startedAt: Date, createdAt: string) {
 }
 
 function Examine() {
+  const examines = useFakeDB((state) => state.examines);
   const { examineId } = useParams<{ examineId?: string }>();
+
+  const imageBoxRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  const [pointPosition, setPointPosition] = useState({
+    left: 0,
+    top: 0,
+  });
 
   const examine = useMemo(() => {
     if (!examineId) return null;
     const id = Number(examineId);
     return examines.find((item) => item.examineId === id);
-  }, [examineId]);
+  }, [examineId, examines]);
+
+  useEffect(() => {
+    if (!examine) return;
+
+    const imageBox = imageBoxRef.current;
+    const image = imageRef.current;
+
+    if (!imageBox || !image) return;
+
+    const updatePointPosition = () => {
+      const boxRect = imageBox.getBoundingClientRect();
+
+      const boxWidth = boxRect.width;
+      const boxHeight = boxRect.height;
+
+      const naturalWidth = image.naturalWidth;
+      const naturalHeight = image.naturalHeight;
+
+      if (!naturalWidth || !naturalHeight || !boxWidth || !boxHeight) return;
+
+      const boxRatio = boxWidth / boxHeight;
+      const imageRatio = naturalWidth / naturalHeight;
+
+      // eslint-disable-next-line no-useless-assignment
+      let renderedWidth = boxWidth;
+      // eslint-disable-next-line no-useless-assignment
+      let renderedHeight = boxHeight;
+      let offsetX = 0;
+      let offsetY = 0;
+
+      if (imageRatio > boxRatio) {
+        renderedHeight = boxHeight;
+        renderedWidth = boxHeight * imageRatio;
+        offsetX = (boxWidth - renderedWidth) / 2;
+      } else {
+        renderedWidth = boxWidth;
+        renderedHeight = boxWidth / imageRatio;
+        offsetY = (boxHeight - renderedHeight) / 2;
+      }
+
+      setPointPosition({
+        left: offsetX + examine.painPointX * renderedWidth,
+        top: offsetY + examine.painPointY * renderedHeight,
+      });
+    };
+
+    updatePointPosition();
+
+    const resizeObserver = new ResizeObserver(updatePointPosition);
+    resizeObserver.observe(imageBox);
+
+    window.addEventListener("resize", updatePointPosition);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updatePointPosition);
+    };
+  }, [examine]);
 
   if (examineId && !examine) {
     return (
@@ -36,24 +103,91 @@ function Examine() {
     <section className="bg-white p-6">
       {examine ? (
         <>
-          <div className="h-164 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-            <img src={elbowImg} alt="팔꿈치 참고 이미지" className="h-full w-full object-cover" />
+          <div
+            ref={imageBoxRef}
+            className="relative h-164 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100"
+          >
+            <img
+              ref={imageRef}
+              src={elbowImg}
+              alt="팔꿈치 참고 이미지"
+              onLoad={() => {
+                const imageBox = imageBoxRef.current;
+                const image = imageRef.current;
+
+                if (!imageBox || !image) return;
+
+                const boxRect = imageBox.getBoundingClientRect();
+
+                const boxWidth = boxRect.width;
+                const boxHeight = boxRect.height;
+
+                const naturalWidth = image.naturalWidth;
+                const naturalHeight = image.naturalHeight;
+
+                const boxRatio = boxWidth / boxHeight;
+                const imageRatio = naturalWidth / naturalHeight;
+
+                // eslint-disable-next-line no-useless-assignment
+                let renderedWidth = boxWidth;
+                // eslint-disable-next-line no-useless-assignment
+                let renderedHeight = boxHeight;
+                let offsetX = 0;
+                let offsetY = 0;
+
+                if (imageRatio > boxRatio) {
+                  renderedHeight = boxHeight;
+                  renderedWidth = boxHeight * imageRatio;
+                  offsetX = (boxWidth - renderedWidth) / 2;
+                } else {
+                  renderedWidth = boxWidth;
+                  renderedHeight = boxWidth / imageRatio;
+                  offsetY = (boxHeight - renderedHeight) / 2;
+                }
+
+                setPointPosition({
+                  left: offsetX + examine.painPointX * renderedWidth,
+                  top: offsetY + examine.painPointY * renderedHeight,
+                });
+              }}
+              className="h-full w-full object-cover"
+            />
+
+            <div
+              className="
+                pointer-events-none absolute z-50
+                h-4 w-4 -translate-x-1/2 -translate-y-1/2
+                rounded-full bg-red-600 transition-all
+              "
+              style={{
+                left: `${pointPosition.left}px`,
+                top: `${pointPosition.top}px`,
+              }}
+            />
           </div>
 
           <div className="mt-6 border-t border-slate-200 pt-6">
-            <h3 className="mb-4 text-lg font-semibold text-slate-900">검사 상세 정보</h3>
+            <h3 className="mb-4 text-lg font-semibold text-slate-900">
+              검사 상세 정보
+            </h3>
             <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-4">
               <div className="rounded-lg bg-slate-50 p-3">
                 <p className="text-slate-500">통증 부위</p>
-                <p className="font-medium text-slate-900">{examine.painArea.join(", ")}</p>
+                <p className="font-medium text-slate-900">
+                  {examine.painArea.join(", ")}
+                </p>
               </div>
               <div className="rounded-lg bg-slate-50 p-3">
                 <p className="text-slate-500">유발 동작</p>
-                <p className="font-medium text-slate-900">{examine.painMovement.join(", ")}</p>
+                <p className="font-medium text-slate-900">
+                  {examine.painMovement.join(", ")}
+                </p>
               </div>
               <div className="rounded-lg bg-slate-50 p-3">
                 <p className="text-slate-500">통증 유형</p>
-                <p className="font-medium text-slate-900">{examine.painType.join(", ")}</p>
+                <p className="font-medium text-slate-900">
+                  {examine.painType.join(", ")}
+                </p>
               </div>
               <div className="rounded-lg bg-slate-50 p-3">
                 <p className="text-slate-500">지속 기간</p>
@@ -73,14 +207,15 @@ function Examine() {
                   </div>
                 </div>
               </div>
-            
             </div>
           </div>
 
           <div className="mt-6 grid grid-cols-1 gap-4 border-t border-slate-200 pt-6 md:grid-cols-2">
             <div className="rounded-xl border border-emerald-200 bg-linear-to-br from-emerald-50 to-white p-4">
               <div className="mb-3 flex items-center justify-between">
-                <p className="text-sm font-semibold text-emerald-800">진료 완료</p>
+                <p className="text-sm font-semibold text-emerald-800">
+                  진료 완료
+                </p>
                 <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
                   {examine.isCompleted ? "완료" : "진행중"}
                 </span>
@@ -99,7 +234,9 @@ function Examine() {
 
             <div className="rounded-xl border border-blue-200 bg-linear-to-br from-blue-50 to-white p-4">
               <div className="mb-3 flex items-center justify-between">
-                <p className="text-sm font-semibold text-blue-800">진료실 호출</p>
+                <p className="text-sm font-semibold text-blue-800">
+                  진료실 호출
+                </p>
                 <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">
                   빠른 호출
                 </span>

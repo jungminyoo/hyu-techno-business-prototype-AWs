@@ -1,4 +1,4 @@
-import { createHashRouter } from "react-router";
+import { createHashRouter, Outlet } from "react-router";
 import Layout from "./pages/Layout";
 import ExamineLayout from "./pages/examine/ExamineLayout";
 import Landing from "./pages/Landing";
@@ -11,6 +11,7 @@ import Examine from "./pages/manage/Examine";
 import PatientsSidebar from "./pages/manage/PatientsSidebar";
 import ExamRecordsSidebar from "./pages/manage/ExamRecordsSidebar";
 import Complete from "./pages/examine/Complete";
+import FirstMedical from "./pages/examine/FirstMedical";
 
 const router = createHashRouter([
   {
@@ -22,7 +23,17 @@ const router = createHashRouter([
         path: "examine",
         Component: ExamineLayout,
         children: [
-          { path: "first", Component: First },
+          {
+            path: "first",
+            Component: Outlet,
+            children: [
+              { index: true, Component: First },
+              {
+                path: ":patientId/medical",
+                Component: FirstMedical,
+              },
+            ],
+          },
           { path: "revisit", Component: Revisit },
           { path: "area", Component: Area },
           { path: "others", Component: Others },

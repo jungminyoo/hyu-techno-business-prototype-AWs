@@ -1,11 +1,15 @@
 import { NavLink, Outlet } from "react-router";
-import { patients } from "../../datas/patientsData";
-import { examines } from "../../datas/examinesData";
 import logoImage from "../../assets/img/152a15a6bf3756c63c9f5b2effa70bc6.png";
+import useFakeDB from "../../stores/useFakeDB";
 
 function PatientsSidebar() {
+  const patients = useFakeDB((state) => state.patients);
+  const examines = useFakeDB((state) => state.examines);
+
   const hasOngoingExamByPatient = (patientId: number) => {
-    return examines.some((exam) => exam.patientId === patientId && !exam.isCompleted);
+    return examines.some(
+      (exam) => exam.patientId === patientId && !exam.isCompleted,
+    );
   };
 
   return (
@@ -16,7 +20,9 @@ function PatientsSidebar() {
           alt="Logo"
           className="absolute top-4 left-4 w-8 h-8 object-contain"
         />
-        <h2 className="mt-10  mb-3 text-sm font-semibold text-slate-900">Patients</h2>
+        <h2 className="mt-10  mb-3 text-sm font-semibold text-slate-900">
+          Patients
+        </h2>
         <nav className="flex flex-col gap-2 overflow-auto max-h-[calc(100vh-10rem)] pr-1">
           {patients.map((patient) => (
             <NavLink

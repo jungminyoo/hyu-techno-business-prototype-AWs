@@ -34,7 +34,7 @@ const useExamine = create(
 
     currentPainPointX: -10,
     currentPainPointY: -10,
-    currentPainMovement: "당기기",
+    currentPainMovement: "굽히기(굴곡)",
     phase: "area",
 
     selectedArea: (area: PainArea) =>

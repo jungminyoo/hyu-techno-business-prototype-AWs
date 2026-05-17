@@ -14,7 +14,7 @@ export function AnatomyModel(props: ThreeElements["group"]) {
   const phase = useExamine((state) => state.phase);
   const currentPainMovement = useExamine((state) => state.currentPainMovement);
 
-  const model = useGLTF("/models/anatomy.glb");
+  const model = useGLTF("./models/anatomy.glb");
   const animations = useAnimations(model.animations, model.scene);
 
   useEffect(() => {
@@ -68,6 +68,6 @@ export function AnatomyModel(props: ThreeElements["group"]) {
   );
 }
 
-useGLTF.preload("/models/anatomy.glb");
+useGLTF.preload("./models/anatomy.glb");
 
 export default AnatomyModel;

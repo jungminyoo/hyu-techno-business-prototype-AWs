@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createHashRouter } from "react-router";
 import Layout from "./pages/Layout";
 import ExamineLayout from "./pages/examine/ExamineLayout";
 import Landing from "./pages/Landing";
@@ -12,7 +12,7 @@ import PatientsSidebar from "./pages/manage/PatientsSidebar";
 import ExamRecordsSidebar from "./pages/manage/ExamRecordsSidebar";
 import Complete from "./pages/examine/Complete";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     Component: Layout,

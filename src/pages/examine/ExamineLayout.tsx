@@ -2,10 +2,9 @@ import { Outlet } from "react-router";
 
 function ExamineLayout() {
   return (
-    <>
-      <h1>Examine Page</h1>
+    <div className="w-full h-full flex flex-col justify-center items-center select-none">
       <Outlet />
-    </>
+    </div>
   );
 }
 

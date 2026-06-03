@@ -15,8 +15,28 @@ function formatDuration(startedAt: Date, createdAt: string) {
   return diffDays === 0 ? "당일" : `${diffDays}일`;
 }
 
+function buildClinicalSummary(examine: {
+  painArea: string[];
+  painMovement: string[];
+  painMovementAngle?: number;
+  painType: string[];
+  painScore: number;
+}) {
+  const area = examine.painArea.join(", ") || "부위 미상";
+  const movement = examine.painMovement.join(", ") || "유발 동작 미상";
+  const movementAngle =
+    examine.painMovementAngle !== undefined
+      ? `, ${examine.painMovementAngle}도에서 통증`
+      : "";
+  const painType = examine.painType.join(", ") || "통증 양상 미상";
+
+  return `${area} 부위, ${movement} 시 통증${movementAngle}. ${painType}, NRS ${examine.painScore}점.`;
+}
+
 function Examine() {
+  const patients = useFakeDB((state) => state.patients);
   const examines = useFakeDB((state) => state.examines);
+  const updateExamine = useFakeDB((state) => state.updateExamine);
   const { examineId } = useParams<{ examineId?: string }>();
 
   const imageBoxRef = useRef<HTMLDivElement>(null);
@@ -32,6 +52,11 @@ function Examine() {
     const id = Number(examineId);
     return examines.find((item) => item.examineId === id);
   }, [examineId, examines]);
+
+  const patient = useMemo(() => {
+    if (!examine) return null;
+    return patients.find((item) => item.patientId === examine.patientId);
+  }, [examine, patients]);
 
   useEffect(() => {
     if (!examine) return;
@@ -105,7 +130,7 @@ function Examine() {
         <>
           <div
             ref={imageBoxRef}
-            className="relative h-164 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100"
+            className="relative h-80 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100 md:h-[32rem] lg:h-[40rem]"
           >
             <img
               ref={imageRef}
@@ -167,6 +192,19 @@ function Examine() {
           </div>
 
           <div className="mt-6 border-t border-slate-200 pt-6">
+            <div className="mb-5 rounded-xl border border-blue-100 bg-blue-50 p-4">
+              <p className="text-xs font-semibold text-blue-700">문진 요약</p>
+              <p className="mt-2 text-base font-semibold leading-relaxed text-slate-900">
+                {buildClinicalSummary(examine)}
+              </p>
+              {patient && (
+                <p className="mt-2 text-xs text-slate-500">
+                  {patient.name} · {patient.birthDate} · {patient.gender} ·{" "}
+                  {patient.phone}
+                </p>
+              )}
+            </div>
+
             <h3 className="mb-4 text-lg font-semibold text-slate-900">
               검사 상세 정보
             </h3>
@@ -182,6 +220,11 @@ function Examine() {
                 <p className="font-medium text-slate-900">
                   {examine.painMovement.join(", ")}
                 </p>
+                {examine.painMovementAngle !== undefined && (
+                  <p className="mt-1 text-xs font-semibold text-blue-600">
+                    {examine.painMovementAngle}°에서 통증
+                  </p>
+                )}
               </div>
               <div className="rounded-lg bg-slate-50 p-3">
                 <p className="text-slate-500">통증 유형</p>
@@ -227,6 +270,9 @@ function Examine() {
                 type="button"
                 className="w-full rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-300"
                 disabled={examine.isCompleted}
+                onClick={() =>
+                  updateExamine(examine.examineId, { isCompleted: true })
+                }
               >
                 {examine.isCompleted ? "완료됨" : "완료 처리"}
               </button>

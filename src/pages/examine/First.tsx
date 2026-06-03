@@ -2,6 +2,7 @@ import { useState } from "react";
 import { type Patient } from "../../datas/patientsData";
 import { useNavigate } from "react-router";
 import useFakeDB from "../../stores/useFakeDB";
+import ExamineProgress from "./ExamineProgress";
 
 type PatientForm = Pick<
   Patient,
@@ -56,10 +57,12 @@ function First() {
     !patientForm.address.trim();
 
   return (
-    <div className="h-full w-full overflow-y-auto">
-      <div className="flex min-h-full w-full justify-center px-4 py-6">
-        <div className="flex w-full max-w-md flex-col justify-center rounded-3xl bg-white px-5 py-8 text-neutral-900 shadow-lg">
-          <div className="mb-8 text-center">
+    <div className="h-full w-full overflow-hidden">
+      <div className="flex min-h-full w-full justify-center px-4 py-3 md:px-6">
+        <div className="flex w-full max-w-md flex-col justify-center rounded-3xl bg-white px-5 py-5 text-neutral-900 shadow-lg md:max-w-2xl md:px-6">
+          <ExamineProgress currentStep={1} />
+
+          <div className="mb-4 text-center">
             <p className="mb-3 text-xs font-medium text-blue-600">
               초진 문진 정보
             </p>
@@ -77,9 +80,9 @@ function First() {
             </p>
           </div>
 
-          <div className="rounded-3xl border border-neutral-200 bg-neutral-50 px-4 py-5 shadow-sm">
-            <div className="flex flex-col gap-5">
-              <label className="flex flex-col gap-2">
+          <div className="rounded-3xl border border-neutral-200 bg-neutral-50 px-4 py-3 shadow-sm">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <label className="flex flex-col gap-2 md:col-span-2">
                 <span className="text-sm font-bold text-neutral-800">이름</span>
                 <input
                   name="name"
@@ -155,7 +158,7 @@ function First() {
                 />
               </label>
 
-              <label className="flex flex-col gap-2">
+              <label className="flex flex-col gap-2 md:col-span-2">
                 <span className="text-sm font-bold text-neutral-800">주소</span>
                 <textarea
                   name="address"
@@ -178,12 +181,20 @@ function First() {
               disabled={isDisabled}
               onClick={handleSubmit}
               className="
-                mt-7 w-full rounded-2xl bg-neutral-900 py-3.5 text-sm font-bold
+                mt-4 w-full rounded-2xl bg-neutral-900 py-3.5 text-sm font-bold
                 text-white transition-colors active:bg-neutral-700 cursor-pointer
                 disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-neutral-500
               "
             >
               완료
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate("/")}
+              className="mt-3 w-full rounded-2xl border border-neutral-200 bg-white py-3 text-sm font-bold text-neutral-700 transition-colors active:bg-neutral-100"
+            >
+              이전
             </button>
           </div>
         </div>

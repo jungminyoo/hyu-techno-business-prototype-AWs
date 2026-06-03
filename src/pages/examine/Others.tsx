@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useExamine from "../../stores/useExamine";
 import { useNavigate } from "react-router";
-import useFakeDB from "../../stores/useFakeDB";
+import ExamineProgress from "./ExamineProgress";
 
 const painTypeOptions = [
   "날카롭고, 찌르는 듯한 통증",
@@ -15,13 +15,22 @@ const painTypeOptions = [
 function Others() {
   const navigate = useNavigate();
 
-  const addExamine = useFakeDB((state) => state.addExamine);
-  const completedExamine = useExamine((state) => state.completedExamine);
+  const storedPainType = useExamine((state) => state.painType);
+  const storedPainStartedAt = useExamine((state) => state.painStartedAt);
+  const storedPainScore = useExamine((state) => state.painScore);
+  const setOtherAnswers = useExamine((state) => state.setOtherAnswers);
 
-  const [selectedPainTypes, setSelectedPainTypes] = useState<string[]>([]);
+  const [selectedPainTypes, setSelectedPainTypes] =
+    useState<string[]>(storedPainType);
   const [etcText, setEtcText] = useState("");
-  const [painStartedAt, setPainStartedAt] = useState("");
-  const [painScore, setPainScore] = useState(0);
+  const [painStartedAt, setPainStartedAt] = useState(() => {
+    if (!storedPainStartedAt || Number.isNaN(storedPainStartedAt.getTime())) {
+      return "";
+    }
+
+    return storedPainStartedAt.toISOString().slice(0, 10);
+  });
+  const [painScore, setPainScore] = useState(storedPainScore);
 
   const togglePainType = (painType: string) => {
     setSelectedPainTypes((prev) => {
@@ -44,42 +53,31 @@ function Others() {
       return type;
     });
 
-    const result = {
+    setOtherAnswers({
       painType: finalPainTypes,
       painStartedAt: new Date(painStartedAt),
       painScore,
-    };
-
-    const newExamine = completedExamine(result);
-
-    addExamine({
-      patientId: newExamine.patientId,
-      painArea: newExamine.painArea,
-      painPointX: newExamine.painPointX,
-      painPointY: newExamine.painPointY,
-      painMovement: newExamine.painMovement,
-      painType: newExamine.painType,
-      painStartedAt: newExamine.painStartedAt,
-      painScore: newExamine.painScore,
-      isCompleted: newExamine.isCompleted,
     });
 
-    navigate("/examine/complete");
+    navigate("/examine/summary");
   };
 
   return (
-    <div className="h-full w-full overflow-y-auto">
-      <div className="flex min-h-full w-full justify-center px-4 py-6">
-        <div className="w-full max-w-md rounded-3xl bg-white px-5 py-6 text-neutral-900 shadow-lg">
+    <div className="h-full w-full overflow-hidden">
+      <div className="flex min-h-full w-full justify-center px-4 py-3 md:px-6">
+        <div className="w-full max-w-md rounded-3xl bg-white px-5 py-4 text-neutral-900 shadow-lg md:max-w-3xl md:px-6">
+          <ExamineProgress currentStep={3} />
+
+          <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
           <section>
             <h2 className="mb-1 text-base font-bold leading-snug">
               4. 통증의 종류를 선택해 주세요
             </h2>
-            <p className="mb-4 text-xs text-neutral-500">
+            <p className="mb-2 text-xs text-neutral-500">
               해당되는 통증 양상을 모두 선택해 주세요.
             </p>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1.5">
               {painTypeOptions.map((option) => {
                 const isSelected = selectedPainTypes.includes(option);
                 const isEtc = option === "기타";
@@ -90,7 +88,7 @@ function Others() {
                       type="button"
                       onClick={() => togglePainType(option)}
                       className={`
-                        flex w-full items-center gap-3 rounded-2xl border px-3 py-2.5
+                        flex w-full items-center gap-3 rounded-2xl border px-3 py-2
                         text-left text-sm transition-all
                         ${
                           isSelected
@@ -136,11 +134,12 @@ function Others() {
             </div>
           </section>
 
-          <section className="mt-8">
+          <div>
+          <section>
             <h2 className="mb-1 text-base font-bold leading-snug">
               5. 통증이 언제부터 시작되었나요?
             </h2>
-            <p className="mb-3 text-xs text-neutral-500">
+            <p className="mb-2 text-xs text-neutral-500">
               통증이 처음 시작된 날짜를 선택해 주세요.
             </p>
 
@@ -156,7 +155,7 @@ function Others() {
             />
           </section>
 
-          <section className="mt-8">
+          <section className="mt-4">
             <div className="mb-4 flex items-end justify-between gap-4">
               <div>
                 <h2 className="mb-1 text-base font-bold leading-snug">
@@ -188,19 +187,29 @@ function Others() {
               ))}
             </div>
           </section>
+          </div>
+          </div>
 
           <button
             type="button"
-            disabled={!painStartedAt}
+            disabled={!painStartedAt || selectedPainTypes.length === 0}
             onClick={handleSubmit}
             className="
-              mt-8 w-full rounded-2xl bg-neutral-900 py-3.5 text-sm font-bold
+              mt-3 w-full rounded-2xl bg-neutral-900 py-3 text-sm font-bold
               text-white transition-colors active:bg-neutral-700
               disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-neutral-500
               cursor-pointer hover:bg-neutral-800
             "
           >
-            완료
+            요약 확인
+          </button>
+
+          <button
+            type="button"
+            onClick={() => navigate("/examine/area")}
+            className="mt-2 w-full rounded-2xl border border-neutral-200 bg-white py-2.5 text-sm font-bold text-neutral-700 transition-colors active:bg-neutral-100"
+          >
+            이전
           </button>
         </div>
       </div>

@@ -14,6 +14,9 @@ export interface Examine {
   // 통증이 유발되는 움직임
   painMovement: PainMovement[];
 
+  // 굴곡/신전에서 통증이 발생하는 관절 각도
+  painMovementAngle?: number;
+
   // 통증 종류
   painType: PainType[];
 

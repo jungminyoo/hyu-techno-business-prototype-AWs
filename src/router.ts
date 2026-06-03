@@ -12,6 +12,8 @@ import PatientsSidebar from "./pages/manage/PatientsSidebar";
 import ExamRecordsSidebar from "./pages/manage/ExamRecordsSidebar";
 import Complete from "./pages/examine/Complete";
 import FirstMedical from "./pages/examine/FirstMedical";
+import Summary from "./pages/examine/Summary";
+import MovementAngle from "./pages/examine/MovementAngle";
 
 const router = createHashRouter([
   {
@@ -36,7 +38,9 @@ const router = createHashRouter([
           },
           { path: "revisit", Component: Revisit },
           { path: "area", Component: Area },
+          { path: "movement-angle", Component: MovementAngle },
           { path: "others", Component: Others },
+          { path: "summary", Component: Summary },
           { path: "complete", Component: Complete },
         ],
       },

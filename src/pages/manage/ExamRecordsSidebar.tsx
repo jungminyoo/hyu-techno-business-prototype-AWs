@@ -18,12 +18,17 @@ function ExamRecordsSidebar() {
 
   const patientExamines = useMemo(() => {
     if (Number.isNaN(resolvedPatientId)) return [];
-    return examines.filter((exam) => exam.patientId === resolvedPatientId);
+    return examines
+      .filter((exam) => exam.patientId === resolvedPatientId)
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
   }, [resolvedPatientId, examines]);
 
   return (
-    <div className="h-full flex min-h-0">
-      <aside className="relative w-56 h-full border-r border-slate-200 bg-white overflow-y-auto no-scrollbar">
+    <div className="flex h-full min-h-0">
+      <aside className="relative h-full w-60 shrink-0 overflow-y-auto border-r border-slate-200 bg-white no-scrollbar lg:w-72">
         {patient ? (
           <PatientInfo patient={patient} />
         ) : (
@@ -83,7 +88,12 @@ function ExamRecordsSidebar() {
                     </div>
                   </div>
                   <p className="mt-0.5 text-[10px] text-slate-400">
-                    통증 {exam.painScore}점
+                    {exam.painMovement[0] || "유발 동작 없음"}
+                    {exam.painMovementAngle !== undefined
+                      ? ` ${exam.painMovementAngle}°`
+                      : ""}{" "}
+                    · 통증{" "}
+                    {exam.painScore}점
                   </p>
                 </NavLink>
               ))
@@ -95,7 +105,7 @@ function ExamRecordsSidebar() {
           </nav>
         </div>
       </aside>
-      <main className="flex-1 min-w-0 h-full overflow-auto">
+      <main className="h-full min-w-0 flex-1 overflow-auto">
         <Outlet />
       </main>
     </div>

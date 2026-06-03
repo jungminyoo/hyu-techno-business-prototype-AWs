@@ -12,8 +12,8 @@ function Landing() {
   };
 
   return (
-    <div className="flex h-full w-full items-center justify-center px-4 py-6">
-      <div className="flex h-full w-full max-w-md flex-col justify-center rounded-3xl bg-white px-5 py-8 text-neutral-900 shadow-lg">
+    <div className="flex h-full w-full items-center justify-center px-4 py-6 md:px-8 lg:px-12">
+      <div className="grid w-full max-w-md items-center gap-8 rounded-3xl bg-white px-5 py-8 text-neutral-900 shadow-lg md:max-w-3xl md:grid-cols-[1fr_1fr] md:px-8 md:py-10 lg:max-w-4xl">
         <div className="text-center">
           <p className="mb-3 text-xs font-medium text-blue-600">
             AWS 정형외과 문진 시스템
@@ -34,7 +34,7 @@ function Landing() {
           </p>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-1 md:gap-4">
           <Link
             to={"/examine/first"}
             onClick={handleFirstVisit}
@@ -68,7 +68,7 @@ function Landing() {
           </Link>
         </div>
 
-        <p className="mt-8 text-center text-xs leading-relaxed text-neutral-400">
+        <p className="text-center text-xs leading-relaxed text-neutral-400 md:col-span-2 md:mt-0">
           해당되는 항목을 선택하면
           <br />
           문진이 시작됩니다.

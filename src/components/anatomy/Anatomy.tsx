@@ -6,8 +6,19 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import useExamine from "../../stores/useExamine";
 import Camera from "./Camera";
+import type { PainArea } from "../../datas/examinesData";
 
-function Anatomy() {
+type AnatomyProps = {
+  animationMode?: "auto" | "angle";
+  selectedArea?: PainArea | null;
+  onAreaSelect?: (area: PainArea) => void;
+};
+
+function Anatomy({
+  animationMode = "auto",
+  selectedArea,
+  onAreaSelect,
+}: AnatomyProps) {
   const progress = useProgress((state) => state.progress);
 
   const phase = useExamine((state) => state.phase);
@@ -50,9 +61,7 @@ function Anatomy() {
     <div
       ref={canvasContainerRef}
       onClick={handlePointClick}
-      className={`relative w-9/10 ${
-        phase !== "area" ? "h-[90cqw]" : "h-3/4"
-      } transition-all duration-2000 rounded-2xl overflow-hidden ${
+      className={`relative h-full min-h-0 w-full overflow-hidden rounded-3xl transition-all duration-700 ${
         phase === "point" && "cursor-pointer"
       }`}
     >
@@ -70,12 +79,20 @@ function Anatomy() {
 
         <Camera />
 
-        <AnatomyModel ref={anatomyModelRef} position={[0, -0.9, 0]} />
+        <AnatomyModel
+          ref={anatomyModelRef}
+          animationMode={animationMode}
+          position={[0, -0.9, 0]}
+        />
 
         {phase === "area" && (
           <>
             <OrbitControls enablePan={false} />
-            <AreaPoints anatomyModelRef={anatomyModelRef} />
+            <AreaPoints
+              anatomyModelRef={anatomyModelRef}
+              selectedArea={selectedArea}
+              onAreaSelect={onAreaSelect}
+            />
           </>
         )}
       </Canvas>

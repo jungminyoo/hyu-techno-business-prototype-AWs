@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import { type Disease, type Medication } from "../../datas/patientsData";
 import useExamine from "../../stores/useExamine";
 import useFakeDB from "../../stores/useFakeDB";
+import ExamineProgress from "./ExamineProgress";
 
 const diseaseOptions: Disease[] = ["고혈압", "당뇨", "심장병", "기타"];
 const medicationOptions: Medication[] = [
@@ -27,6 +28,7 @@ function FirstMedical() {
   const updatePatient = useFakeDB((state) => state.updatePatient);
 
   const setPatientId = useExamine((state) => state.setPatientId);
+  const startAreaSelection = useExamine((state) => state.startAreaSelection);
   const navigate = useNavigate();
   const { patientId } = useParams();
 
@@ -112,6 +114,7 @@ function FirstMedical() {
     });
 
     setPatientId(Number(patientId));
+    startAreaSelection();
     navigate("/examine/area");
   };
 
@@ -120,10 +123,12 @@ function FirstMedical() {
     (medicalForm.hasAllergy === "예" && !medicalForm.allergyDescription.trim());
 
   return (
-    <div className="h-full w-full overflow-y-auto">
-      <div className="flex min-h-full w-full justify-center px-4 py-6">
-        <div className="flex w-full max-w-md flex-col justify-center rounded-3xl bg-white px-5 py-8 text-neutral-900 shadow-lg">
-          <div className="mb-8 text-center">
+    <div className="h-full w-full overflow-hidden">
+      <div className="flex min-h-full w-full justify-center px-4 py-3 md:px-6">
+        <div className="flex w-full max-w-md flex-col justify-center rounded-3xl bg-white px-5 py-5 text-neutral-900 shadow-lg md:max-w-3xl md:px-6">
+          <ExamineProgress currentStep={1} />
+
+          <div className="mb-4 text-center">
             <p className="mb-3 text-xs font-medium text-blue-600">
               초진 추가 문진
             </p>
@@ -141,7 +146,7 @@ function FirstMedical() {
             </p>
           </div>
 
-          <div className="rounded-3xl border border-neutral-200 bg-neutral-50 px-4 py-5 shadow-sm">
+          <div className="grid gap-4 rounded-3xl border border-neutral-200 bg-neutral-50 px-4 py-3 shadow-sm lg:grid-cols-2">
             <section>
               <h2 className="mb-1 text-base font-bold leading-snug">
                 1. 혈압이나 당뇨가 있으십니까?
@@ -210,7 +215,7 @@ function FirstMedical() {
               )}
             </section>
 
-            <section className="mt-8">
+            <section>
               <h2 className="mb-1 text-base font-bold leading-snug">
                 2. 현재 복용중인 약에 체크해 주세요.
               </h2>
@@ -279,7 +284,7 @@ function FirstMedical() {
               )}
             </section>
 
-            <section className="mt-8">
+            <section className="lg:col-span-2">
               <h2 className="mb-1 text-base font-bold leading-snug">
                 3. 주사, 약물 알레르기 등 부작용을 경험한 적이 있으십니까?
               </h2>
@@ -374,12 +379,21 @@ function FirstMedical() {
               disabled={isDisabled}
               onClick={handleSubmit}
               className="
-                mt-8 w-full rounded-2xl bg-neutral-900 py-3.5 text-sm font-bold
+                w-full rounded-2xl bg-neutral-900 py-3.5 text-sm font-bold
                 text-white transition-colors active:bg-neutral-700 cursor-pointer
                 disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-neutral-500
+                lg:col-span-2
               "
             >
               완료
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate("/examine/first")}
+              className="w-full rounded-2xl border border-neutral-200 bg-white py-3 text-sm font-bold text-neutral-700 transition-colors active:bg-neutral-100 lg:col-span-2"
+            >
+              이전
             </button>
           </div>
         </div>
